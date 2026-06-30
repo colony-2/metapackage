@@ -1,0 +1,19 @@
+{
+  "name": "@colony/c2",
+  "version": "0.0.1",
+  "description": "Metapackage for the Colony C2 packages.",
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md"
+  ],
+  "dependencies": {
+    "@colony2/c2j": "*",
+    "@colony2/c2m": "*",
+    "@colony2/c2r": "*",
+    "@colony2/jobdb": "*",
+    "@colony2/shai": "*"
+  }
+}
