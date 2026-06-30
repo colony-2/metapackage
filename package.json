@@ -2,7 +2,7 @@
   "name": "@colony/c2",
   "version": "0.0.1",
   "description": "Metapackage for the Colony C2 packages.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/colony-2/metapackage.git"
@@ -15,6 +15,7 @@
     "access": "public"
   },
   "files": [
+    "LICENSE",
     "README.md"
   ],
   "dependencies": {
