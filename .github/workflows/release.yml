@@ -51,13 +51,17 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
           git add package.json
           git commit -m "chore(release): v${version} [skip ci]"
-          git tag "v${version}"
+          git tag -a "v${version}" -m "v${version}"
 
       - name: Verify package contents
         run: npm pack --dry-run
 
       - name: Push version commit and tag
-        run: git push origin "HEAD:${GITHUB_REF_NAME}" --follow-tags
+        run: |
+          set -euo pipefail
+          version="${{ steps.version.outputs.version }}"
+          git push --atomic origin "HEAD:${GITHUB_REF_NAME}" "refs/tags/v${version}:refs/tags/v${version}"
+          git ls-remote --exit-code --tags origin "refs/tags/v${version}"
 
       - name: Publish to npm
         run: npm publish --access public
@@ -67,6 +71,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "v${{ steps.version.outputs.version }}" \
-            --title "@colony/c2 v${{ steps.version.outputs.version }}" \
+            --title "@colony2/c2 v${{ steps.version.outputs.version }}" \
             --generate-notes \
             --verify-tag
