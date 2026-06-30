@@ -3,6 +3,14 @@
   "version": "0.0.1",
   "description": "Metapackage for the Colony C2 packages.",
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colony-2/metapackage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/colony-2/metapackage/issues"
+  },
+  "homepage": "https://github.com/colony-2/metapackage#readme",
   "publishConfig": {
     "access": "public"
   },

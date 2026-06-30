@@ -39,7 +39,7 @@ git init
 git branch -M main
 git add .
 git commit -m "chore: initial package [skip ci]"
-git remote add origin git@github.com:OWNER/REPO.git
+git remote add origin git@github.com:colony-2/metapackage.git
 git push -u origin main
 ```
 
@@ -53,11 +53,9 @@ npm publish --access public
 Then configure npm Trusted Publishing for `@colony/c2`:
 
 - publisher: GitHub Actions
-- organization or user: your GitHub owner
-- repository: your GitHub repository name
+- organization or user: `colony-2`
+- repository: `metapackage`
 - workflow filename: `release.yml`
 - allowed action: `npm publish`
-
-Before the first automated release, set `repository` in `package.json` to the same public GitHub repository used for Trusted Publishing.
 
 After that, each normal commit pushed to `main` or `master` will publish through GitHub Actions without any npm token in GitHub.
