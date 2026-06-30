@@ -33,16 +33,17 @@ jobs:
         run: npm config set registry https://registry.npmjs.org/
 
       - name: Update dependency versions
+        id: update
         run: node scripts/update-dependencies.mjs
 
       - name: Commit dependency updates
-        id: changes
+        if: steps.update.outputs.changed == 'true'
         run: |
           set -euo pipefail
 
           if git diff --quiet -- package.json; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
+            echo "Updater reported changes, but package.json is clean."
+            exit 1
           fi
 
           git config user.name "github-actions[bot]"
@@ -50,10 +51,9 @@ jobs:
           git add package.json
           git commit -m "chore: update dependency versions"
           git push origin "HEAD:${GITHUB_REF_NAME}"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Dispatch release workflow
-        if: steps.changes.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run release.yml --ref "${GITHUB_REF_NAME}"
+        run: gh workflow run release.yml --ref "${GITHUB_REF_NAME}" -f source=dependency-update

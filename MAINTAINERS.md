@@ -32,7 +32,11 @@ The dependency update workflow:
 4. commits the tool version changes
 5. dispatches `.github/workflows/release.yml`
 
+The updater script writes a `changed=true|false` workflow output. The workflow only commits and dispatches a release when that output is `true`.
+
 The explicit workflow dispatch is intentional. GitHub does not run normal `push` workflows for commits pushed by a workflow using `GITHUB_TOKEN`, so the updater cannot rely on its dependency-update commit automatically triggering the release workflow.
+
+The release workflow also has a defense-in-depth guard for dependency-update dispatches: it compares `package.json#colony2.tools` between `HEAD` and `HEAD^` and skips the release when the tool map did not change.
 
 ## Release Automation
 

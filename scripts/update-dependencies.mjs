@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, readFileSync, writeFileSync } from "node:fs";
 
 const dependencies = [
   "@colony2/c2j",
@@ -14,6 +14,12 @@ function latestVersion(packageName) {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "inherit"]
   }).trim();
+}
+
+function setOutput(name, value) {
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`);
+  }
 }
 
 const packageJsonPath = new URL("../package.json", import.meta.url);
@@ -43,3 +49,5 @@ if (changed) {
 } else {
   console.log("All dependency versions are current.");
 }
+
+setOutput("changed", changed ? "true" : "false");

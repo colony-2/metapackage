@@ -6,6 +6,11 @@ on:
       - main
       - master
   workflow_dispatch:
+    inputs:
+      source:
+        description: Release source.
+        required: false
+        default: manual
 
 permissions:
   contents: write
@@ -32,17 +37,40 @@ jobs:
         with:
           node-version: 24
 
+      - name: Decide whether to release
+        id: guard
+        env:
+          RELEASE_SOURCE: ${{ github.event.inputs.source || 'manual' }}
+        run: |
+          set -euo pipefail
+          should_release=true
+
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ] && [ "${RELEASE_SOURCE}" = "dependency-update" ]; then
+            if node -e 'const { execFileSync } = require("child_process"); const toolsAt = (ref) => JSON.parse(execFileSync("git", ["show", ref + ":package.json"], { encoding: "utf8" })).colony2?.tools ?? {}; process.exit(JSON.stringify(toolsAt("HEAD")) === JSON.stringify(toolsAt("HEAD^")) ? 1 : 0);'
+            then
+              echo "Dependency update changed tool versions; continuing release."
+            else
+              echo "Dependency update did not change tool versions; skipping release."
+              should_release=false
+            fi
+          fi
+
+          echo "should_release=${should_release}" >> "$GITHUB_OUTPUT"
+
       - name: Configure git author
+        if: steps.guard.outputs.should_release == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Show npm version
+        if: steps.guard.outputs.should_release == 'true'
         run: |
           npm --version
           npm config set registry https://registry.npmjs.org/
 
       - name: Bump patch version and tag
+        if: steps.guard.outputs.should_release == 'true'
         id: version
         run: |
           set -euo pipefail
@@ -54,9 +82,11 @@ jobs:
           git tag -a "v${version}" -m "v${version}"
 
       - name: Verify package contents
+        if: steps.guard.outputs.should_release == 'true'
         run: npm pack --dry-run
 
       - name: Push version commit and tag
+        if: steps.guard.outputs.should_release == 'true'
         run: |
           set -euo pipefail
           version="${{ steps.version.outputs.version }}"
@@ -64,9 +94,11 @@ jobs:
           git ls-remote --exit-code --tags origin "refs/tags/v${version}"
 
       - name: Publish to npm
+        if: steps.guard.outputs.should_release == 'true'
         run: npm publish --access public
 
       - name: Create GitHub release
+        if: steps.guard.outputs.should_release == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
