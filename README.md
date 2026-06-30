@@ -1,61 +1,23 @@
-# @colony/c2
+# [@colony2/c2](https://www.npmjs.com/package/@colony2/c2)
 
-Metapackage for installing the Colony C2 package set:
+Metapackage for installing the Colony 2 package set.
 
-- `@colony2/c2r`
-- `@colony2/c2m`
-- `@colony2/c2j`
-- `@colony2/jobdb`
-- `@colony2/shai`
+GitHub: [colony-2/metapackage](https://github.com/colony-2/metapackage)
+
+## Packages
+
+| Package | GitHub |
+| --- | --- |
+| [`@colony2/c2r`](https://www.npmjs.com/package/@colony2/c2r) | [colony-2/c2r](https://github.com/colony-2/c2r) |
+| [`@colony2/c2m`](https://www.npmjs.com/package/@colony2/c2m) | [colony-2/c2m](https://github.com/colony-2/c2m) |
+| [`@colony2/c2j`](https://www.npmjs.com/package/@colony2/c2j) | [colony-2/c2j](https://github.com/colony-2/c2j) |
+| [`@colony2/jobdb`](https://www.npmjs.com/package/@colony2/jobdb) | [colony-2/jobdb](https://github.com/colony-2/jobdb) |
+| [`@colony2/shai`](https://www.npmjs.com/package/@colony2/shai) | [colony-2/shai](https://github.com/colony-2/shai) |
 
 ## Install
 
 ```sh
-npm install @colony/c2
+npm install -g @colony2/c2
 ```
 
-This package is dependency-only and does not expose a runtime entrypoint.
-
-## Releases
-
-Every push to `main` or `master` runs `.github/workflows/release.yml`.
-
-The workflow:
-
-1. bumps the patch version in `package.json`
-2. commits the version bump with `[skip ci]`
-3. tags the commit as `vX.Y.Z`
-4. publishes the package to npm
-5. creates a GitHub release from the tag
-
-Publishing uses npm Trusted Publishing over GitHub Actions OIDC. No `NPM_TOKEN` secret is required.
-
-## First setup
-
-The first GitHub push should skip the release workflow because the npm package and trusted publisher connection do not exist yet:
-
-```sh
-git init
-git branch -M main
-git add .
-git commit -m "chore: initial package [skip ci]"
-git remote add origin git@github.com:colony-2/metapackage.git
-git push -u origin main
-```
-
-Publish the first package version locally:
-
-```sh
-npm login
-npm publish --access public
-```
-
-Then configure npm Trusted Publishing for `@colony/c2`:
-
-- publisher: GitHub Actions
-- organization or user: `colony-2`
-- repository: `metapackage`
-- workflow filename: `release.yml`
-- allowed action: `npm publish`
-
-After that, each normal commit pushed to `main` or `master` will publish through GitHub Actions without any npm token in GitHub.
+This installs the package set and exposes the `c2r`, `c2m`, `c2j`, `jobdb`, and `shai` commands on your `PATH`.

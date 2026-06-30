@@ -11,10 +11,18 @@
     "url": "https://github.com/colony-2/metapackage/issues"
   },
   "homepage": "https://github.com/colony-2/metapackage#readme",
+  "bin": {
+    "c2j": "bin/c2j.cjs",
+    "c2m": "bin/c2m.cjs",
+    "c2r": "bin/c2r.cjs",
+    "jobdb": "bin/jobdb.cjs",
+    "shai": "bin/shai.cjs"
+  },
   "publishConfig": {
     "access": "public"
   },
   "files": [
+    "bin",
     "LICENSE",
     "README.md"
   ],
