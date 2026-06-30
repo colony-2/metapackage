@@ -27,10 +27,10 @@
     "README.md"
   ],
   "dependencies": {
-    "@colony2/c2j": "*",
-    "@colony2/c2m": "*",
-    "@colony2/c2r": "*",
-    "@colony2/jobdb": "*",
-    "@colony2/shai": "*"
+    "@colony2/c2j": "0.0.41",
+    "@colony2/c2m": "0.0.3",
+    "@colony2/c2r": "0.0.2",
+    "@colony2/jobdb": "0.0.13",
+    "@colony2/shai": "0.0.11"
   }
 }

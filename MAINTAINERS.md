@@ -4,9 +4,25 @@ This package is an npm metapackage for the Colony 2 package set. Publishing a ne
 
 The package owns thin proxy bins for `c2r`, `c2m`, `c2j`, `jobdb`, and `shai`. npm does not reliably place dependency-owned bins on the global `PATH` when users globally install a dependency-only metapackage, so these proxy bins resolve and run the corresponding dependency package entrypoints.
 
+Dependencies are pinned to exact versions. That makes each metapackage release a reproducible bundle and gives automation a concrete value to update when one of the underlying packages publishes a new version.
+
+## Dependency Updates
+
+`.github/workflows/update-dependencies.yml` runs hourly and can also be run manually.
+
+The dependency update workflow:
+
+1. runs `scripts/update-dependencies.mjs`
+2. checks the latest npm version of each bundled package
+3. updates `package.json` when any pinned dependency version is stale
+4. commits the dependency version changes
+5. dispatches `.github/workflows/release.yml`
+
+The explicit workflow dispatch is intentional. GitHub does not run normal `push` workflows for commits pushed by a workflow using `GITHUB_TOKEN`, so the updater cannot rely on its dependency-update commit automatically triggering the release workflow.
+
 ## Release Automation
 
-Every push to `main` or `master` runs `.github/workflows/release.yml`, except commits containing `[skip ci]`.
+Human pushes to `main` or `master` run `.github/workflows/release.yml`, except commits containing `[skip ci]`. The release workflow can also be run manually or dispatched by the dependency update workflow.
 
 The release workflow:
 
@@ -35,4 +51,4 @@ The package repository metadata in `package.json` must continue to point to `htt
 
 The first package version was published locally because npm Trusted Publishing can only be configured after the npm package exists.
 
-Initial setup used `[skip ci]` commits so the release workflow did not run before the npm trusted publisher was configured. Future normal commits to `main` or `master` should be released automatically by GitHub Actions.
+Initial setup used `[skip ci]` commits so the release workflow did not run before the npm trusted publisher was configured. Future normal human commits to `main` or `master` should be released automatically by GitHub Actions.

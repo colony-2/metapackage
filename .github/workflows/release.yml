@@ -19,7 +19,7 @@ jobs:
   release:
     name: Bump, tag, publish, and release
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'github-actions[bot]' && (github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]')) }}
+    if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
 
     steps:
       - name: Checkout
