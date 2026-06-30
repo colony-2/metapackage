@@ -18,22 +18,25 @@ function latestVersion(packageName) {
 
 const packageJsonPath = new URL("../package.json", import.meta.url);
 const pkg = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-const nextDependencies = {};
+const nextTools = {};
 
 let changed = false;
 for (const dependency of dependencies) {
   const version = latestVersion(dependency);
-  nextDependencies[dependency] = version;
+  nextTools[dependency] = version;
 
-  if (pkg.dependencies?.[dependency] !== version) {
+  if (pkg.colony2?.tools?.[dependency] !== version) {
     changed = true;
-    console.log(`${dependency}: ${pkg.dependencies?.[dependency] ?? "(missing)"} -> ${version}`);
+    console.log(`${dependency}: ${pkg.colony2?.tools?.[dependency] ?? "(missing)"} -> ${version}`);
   } else {
     console.log(`${dependency}: ${version}`);
   }
 }
 
-pkg.dependencies = nextDependencies;
+pkg.colony2 = {
+  ...(pkg.colony2 ?? {}),
+  tools: nextTools
+};
 
 if (changed) {
   writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, 2)}\n`);

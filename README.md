@@ -20,4 +20,13 @@ GitHub: [colony-2/metapackage](https://github.com/colony-2/metapackage)
 npm install -g @colony2/c2
 ```
 
-This installs the package set and exposes the `c2r`, `c2m`, `c2j`, `jobdb`, and `shai` commands on your `PATH`.
+This installs the package set globally and exposes the `c2r`, `c2m`, `c2j`, `jobdb`, and `shai` commands on your `PATH`.
+
+Only global installation is supported.
+
+The package also provides a `c2` helper:
+
+```sh
+c2 versions
+c2 install
+```

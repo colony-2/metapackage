@@ -1,10 +1,24 @@
 # Maintainers
 
-This package is an npm metapackage for the Colony 2 package set. Publishing a new version updates the dependency bundle that users get from `npm install -g @colony2/c2`.
+This package is an npm meta-installer for the Colony 2 package set. Publishing a new version updates the tool bundle that users get from `npm install -g @colony2/c2`.
 
-The package owns thin proxy bins for `c2r`, `c2m`, `c2j`, `jobdb`, and `shai`. npm does not reliably place dependency-owned bins on the global `PATH` when users globally install a dependency-only metapackage, so these proxy bins resolve and run the corresponding dependency package entrypoints.
+The individual packages own their own global binaries:
 
-Dependencies are pinned to exact versions. That makes each metapackage release a reproducible bundle and gives automation a concrete value to update when one of the underlying packages publishes a new version.
+- `@colony2/c2r` owns `c2r`
+- `@colony2/c2m` owns `c2m`
+- `@colony2/c2j` owns `c2j`
+- `@colony2/jobdb` owns `jobdb`
+- `@colony2/shai` owns `shai`
+
+`@colony2/c2` owns only the non-conflicting `c2` helper command. Its `postinstall` script installs or updates the individual packages globally at the versions recorded in `package.json#colony2.tools`.
+
+This avoids npm global `bin` collisions. If a user already has `@colony2/shai` installed globally, installing `@colony2/c2` updates that package instead of trying to make another package claim the existing `shai` binary.
+
+Local installs are intentionally blocked by `scripts/require-global-install.mjs`. This package manages global CLI tools and should fail fast with a non-interactive error when installed without `-g`.
+
+Tool versions are pinned exactly in `package.json#colony2.tools`. That list drives the global installer and `c2 versions`.
+
+Because the tools are installed as standalone global npm packages, uninstalling `@colony2/c2` does not uninstall the individual tools. That is the tradeoff that lets existing individual installs upgrade cleanly without `EEXIST` collisions.
 
 ## Dependency Updates
 
@@ -14,8 +28,8 @@ The dependency update workflow:
 
 1. runs `scripts/update-dependencies.mjs`
 2. checks the latest npm version of each bundled package
-3. updates `package.json` when any pinned dependency version is stale
-4. commits the dependency version changes
+3. updates `package.json#colony2.tools` when any pinned tool version is stale
+4. commits the tool version changes
 5. dispatches `.github/workflows/release.yml`
 
 The explicit workflow dispatch is intentional. GitHub does not run normal `push` workflows for commits pushed by a workflow using `GITHUB_TOKEN`, so the updater cannot rely on its dependency-update commit automatically triggering the release workflow.
