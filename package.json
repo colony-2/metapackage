@@ -1,6 +1,6 @@
 {
   "name": "@colony2/c2",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Metapackage for the Colony 2 packages.",
   "license": "MIT",
   "repository": {
