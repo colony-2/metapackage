@@ -30,10 +30,10 @@
   ],
   "colony2": {
     "tools": {
-      "@colony2/c2j": "0.0.108",
+      "@colony2/c2j": "0.0.109",
       "@colony2/c2m": "0.0.9",
       "@colony2/c2r": "0.0.2",
-      "@colony2/jobdb": "0.0.64",
+      "@colony2/jobdb": "0.0.65",
       "@colony2/shai": "0.0.14"
     }
   }
